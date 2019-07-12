@@ -1,3 +1,7 @@
+data "aws_ecs_task_definition" "flask" {
+  task_definition = "${aws_ecs_task_definition.flask.family}"
+}
+
 resource "aws_ecs_task_definition" "flask" {
     family                = "flask-task"
     container_definitions = <<DEFINITION

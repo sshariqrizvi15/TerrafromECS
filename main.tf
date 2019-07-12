@@ -35,15 +35,14 @@ module "alb_asg" {
   test_public_sn_02 = "${module.vpc.test_public_sn_02}"
   test_public_sg = "${module.vpc.test_public_sg}"
   ecs-instance-profile = "${module.iam_roles.ecs-instance-profile}"
+  ecs_key_pair_name = "${var.ecs_key_pair_name}"
+  max_instance_size = "${var.max_instance_size}"
+  min_instance_size = "${var.min_instance_size}"
+  desired_capacity = "${var.desired_capacity}"
 
 }
-
-module "task_definitions" {
-  source = "modules/task-definitions"
-}
-
-module "services" {
-  source = "modules/services"
+module "services_and_definitions" {
+  source = "modules/services-and-definitions"
   ecs-service-role = "${module.iam_roles.ecs-service-role}"
   ecs_cluster = "${module.ecs.test-ecs-cluster}"
   ecs-target-group = "${module.alb_asg.ecs-target-group}"

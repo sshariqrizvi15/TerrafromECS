@@ -1,3 +1,7 @@
+data "aws_ecs_task_definition" "nginx" {
+  task_definition = "${aws_ecs_task_definition.nginx.family}"
+}
+
 resource "aws_ecs_task_definition" "nginx" {
     family                = "nginx-task"
     container_definitions = <<DEFINITION
