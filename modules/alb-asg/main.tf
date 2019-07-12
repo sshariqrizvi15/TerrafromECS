@@ -73,3 +73,32 @@ resource "aws_alb_listener" "alb-flask-listener" {
         type             = "forward"
     }
 }
+
+resource "aws_autoscaling_group" "ecs-autoscaling-group" {
+    name                        = "ecs-autoscaling-group"
+    max_size                    = "${var.max_instance_size}"
+    min_size                    = "${var.min_instance_size}"
+    desired_capacity            = "${var.desired_capacity}"
+    vpc_zone_identifier         = ["${var.test_public_sn_01}", "${var.test_public_sn_02}"]
+    launch_configuration        = "${aws_launch_configuration.ecs-launch-configuration.name}"
+    health_check_type           = "ELB"
+}
+
+resource "aws_launch_configuration" "ecs-launch-configuration" {
+    name                        = "ecs-launch-configuration"
+    image_id                    = "ami-0eba5aab4550a443a"
+    instance_type               = "t2.micro"
+    iam_instance_profile        = "${var.ecs-instance-profile}"
+
+    lifecycle {
+      create_before_destroy = true
+    }
+
+    security_groups             = ["${var.test_public_sg}"]
+    associate_public_ip_address = "true"
+    key_name                    = "${var.ecs_key_pair_name}"
+    user_data                   = <<EOF
+                                  #!/bin/bash
+                                  echo ECS_CLUSTER=${var.ecs_cluster} >> /etc/ecs/ecs.config
+                                  EOF
+}
