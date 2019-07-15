@@ -20,6 +20,9 @@ module "vpc" {
 
 module "iam_roles" {
   source = "modules/iam-roles"
+  iam_role_instance_name = "${var.iam_role_instance_name}"
+  iam_instance_profile_name = "${var.iam_instance_profile_name}"
+  iam_role_service_name = "${var.iam_role_service_name}"
 }
 
 module "ecs" {
@@ -39,7 +42,11 @@ module "alb_asg" {
   max_instance_size = "${var.max_instance_size}"
   min_instance_size = "${var.min_instance_size}"
   desired_capacity = "${var.desired_capacity}"
-
+  ecs_load_balancer_name = "${var.ecs_load_balancer_name}"
+  nginx_target_group_name = "${var.nginx_target_group_name}"
+  flask_target_group_name = "${var.flask_target_group_name}"
+  ecs-launch-configuration_name = "${var.ecs-launch-configuration_name}"
+  ecs_autoscaling_group_name = "${var.ecs_autoscaling_group_name}"
 }
 module "services_and_definitions" {
   source = "modules/services-and-definitions"
@@ -47,4 +54,10 @@ module "services_and_definitions" {
   ecs_cluster = "${module.ecs.test-ecs-cluster}"
   ecs-target-group = "${module.alb_asg.ecs-target-group}"
   flask-target-group = "${module.alb_asg.flask-target-group}"
+  nginx_service_name = "${var.nginx_service_name}"
+  nginx_container_name = "${var.nginx_container_name}"
+  nginx_family = "${var.nginx_family}"
+  flask_service_name = "${var.flask_service_name}"
+  flask_container_name = "${var.flask_container_name}"
+  flask_family = "${var.flask_family}"
 }

@@ -37,3 +37,23 @@ variable "min_instance_size" {
 variable "desired_capacity" {
   description = "Desired number of instances in the cluster"
 }
+
+variable "ecs_load_balancer_name" {
+  description = "Name of ECS Load Balancer"
+}
+
+variable "nginx_target_group_name" {
+  description = "Name of nginx target group"
+}
+
+variable "flask_target_group_name" {
+  description = "Name of flask target group"
+}
+
+variable "ecs-launch-configuration_name" {
+  description = "Name of Launch Configuration"
+}
+
+variable "ecs_autoscaling_group_name" {
+  description = "Name of ECS Autoscaling group"
+}

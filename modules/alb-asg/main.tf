@@ -1,5 +1,5 @@
 resource "aws_alb" "ecs-load-balancer" {
-    name                = "ecs-load-balancer"
+    name                = "${var.ecs_load_balancer_name}"
     security_groups     = ["${var.test_public_sg}"]
     subnets             = ["${var.test_public_sn_01}", "${var.test_public_sn_02}"]
 
@@ -9,7 +9,7 @@ resource "aws_alb" "ecs-load-balancer" {
 }
 
 resource "aws_alb_target_group" "ecs-target-group" {
-    name                = "ecs-target-group"
+    name                = "${var.nginx_target_group_name}"
     port                = "80"
     protocol            = "HTTP"
     vpc_id              = "${var.test_vpc}"
@@ -24,14 +24,16 @@ resource "aws_alb_target_group" "ecs-target-group" {
         protocol            = "HTTP"
         timeout             = "5"
     }
-
+    
+    depends_on = ["aws_alb.ecs-load-balancer"]
+    
     tags {
       Name = "ecs-target-group"
     }
 }
 
 resource "aws_alb_target_group" "flask-target-group" {
-    name                = "flask-target-group"
+    name                = "${var.flask_target_group_name}"
     port                = "5000"
     protocol            = "HTTP"
     vpc_id              = "${var.test_vpc}"
@@ -46,6 +48,8 @@ resource "aws_alb_target_group" "flask-target-group" {
         protocol            = "HTTP"
         timeout             = "5"
     }
+    
+    depends_on = ["aws_alb.ecs-load-balancer"]
 
     tags {
       Name = "flask-target-group"
@@ -75,7 +79,7 @@ resource "aws_alb_listener" "alb-flask-listener" {
 }
 
 resource "aws_autoscaling_group" "ecs-autoscaling-group" {
-    name                        = "ecs-autoscaling-group"
+    name                        = "${var.ecs_autoscaling_group_name}"
     max_size                    = "${var.max_instance_size}"
     min_size                    = "${var.min_instance_size}"
     desired_capacity            = "${var.desired_capacity}"
@@ -85,7 +89,7 @@ resource "aws_autoscaling_group" "ecs-autoscaling-group" {
 }
 
 resource "aws_launch_configuration" "ecs-launch-configuration" {
-    name                        = "ecs-launch-configuration"
+    name                        = "${var.ecs-launch-configuration_name}"
     image_id                    = "ami-0eba5aab4550a443a"
     instance_type               = "t2.micro"
     iam_instance_profile        = "${var.ecs-instance-profile}"

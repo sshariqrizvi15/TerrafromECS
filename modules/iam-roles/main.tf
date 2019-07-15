@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ecs-instance-role" {
-    name                = "ecs-instance-role-new"
+    name                = "${var.iam_role_instance_name}"
     path                = "/"
     assume_role_policy  = "${data.aws_iam_policy_document.ecs-instance-policy.json}"
 }
@@ -21,16 +21,13 @@ resource "aws_iam_role_policy_attachment" "ecs-instance-role-attachment" {
 }
 
 resource "aws_iam_instance_profile" "ecs-instance-profile" {
-    name = "ecs-instance-profile-new"
+    name = "${var.iam_instance_profile_name}"
     path = "/"
     role = "${aws_iam_role.ecs-instance-role.id}"
-    provisioner "local-exec" {
-      command = "sleep 10"
-    }
 }
 
 resource "aws_iam_role" "ecs-service-role" {
-    name                = "ecs-service-role-new"
+    name                = "${var.iam_role_service_name}"
     path                = "/"
     assume_role_policy  = "${data.aws_iam_policy_document.ecs-service-policy.json}"
 }
